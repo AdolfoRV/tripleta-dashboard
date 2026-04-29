@@ -1,93 +1,17 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Mi Dashboard Privado</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="https://apis.google.com/js/api.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script src="https://accounts.google.com/gsi/client" async defer></script>
+	<script src="https://apis.google.com/js/api.js"></script>
+	<title>Dashboard</title>
 </head>
+
 <body>
-    <h1>Mi Dashboard</h1>
-    
-    <button id="authorize_button" onclick="handleAuthClick()">Autorizar Google</button>
-    <button id="signout_button" onclick="handleSignoutClick()" style="display: none;">Cerrar Sesión</button>
-
-    <div id="content" style="display: none;">
-        <h2>Próximos Eventos</h2>
-        <ul id="calendar-events"></ul>
-
-        <h2>Últimos Correos</h2>
-        <ul id="gmail-messages"></ul>
-    </div>
-
-    <script>
-        const CLIENT_ID = '134731411042-sj0mbjc2nj8p4nfrk00tgj05mlspp3jf.apps.googleusercontent.com';
-        const DISCOVERY_DOCS = [
-            'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
-            'https://gmail.googleapis.com/$discovery/rest?version=v1',
-            'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'
-        ];
-        const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive.metadata.readonly';
-
-        let tokenClient;
-        let gapiInited = false;
-        let gisInited = false;
-
-        // Inicializar gapi client
-        function gapiLoaded() {
-            gapi.load('client', initializeGapiClient);
-        }
-
-        async function initializeGapiClient() {
-            await gapi.client.init({
-                discoveryDocs: DISCOVERY_DOCS,
-            });
-            gapiInited = true;
-        }
-
-        // Inicializar Google Identity Services
-        function gisLoaded() {
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: '', // Se define en el click
-            });
-            gisInited = true;
-        }
-
-        function handleAuthClick() {
-            tokenClient.callback = async (resp) => {
-                if (resp.error !== undefined) {
-                    throw (resp);
-                }
-                document.getElementById('authorize_button').style.display = 'none';
-                document.getElementById('signout_button').style.display = 'block';
-                document.getElementById('content').style.display = 'block';
-                
-                // Aquí llamarías a las funciones para llenar tu dashboard
-                // fetchCalendar();
-                // fetchGmail();
-            };
-
-            if (gapi.client.getToken() === null) {
-                tokenClient.requestAccessToken({prompt: 'consent'});
-            } else {
-                tokenClient.requestAccessToken({prompt: ''});
-            }
-        }
-
-        function handleSignoutClick() {
-            const token = gapi.client.getToken();
-            if (token !== null) {
-                google.accounts.oauth2.revoke(token.access_token);
-                gapi.client.setToken('');
-                document.getElementById('content').style.display = 'none';
-                document.getElementById('authorize_button').style.display = 'block';
-                document.getElementById('signout_button').style.display = 'none';
-            }
-        }
-    </script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+	<div id="root"></div>
+	<script type="module" src="/src/main.jsx"></script>
 </body>
+
 </html>
